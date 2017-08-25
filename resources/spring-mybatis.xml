@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.2.xsd"
+           >
+ <!-- 加载db.properties文件中的内容，db.properties文件中key命名要有一定的特殊规则 -->
+	<context:property-placeholder location="classpath:db.properties" />
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${mysql.driver}" />
+		<property name="url" value="${mysql.url}" />
+		<property name="username" value="${mysql.username}" />
+		<property name="password" value="${mysql.password}" />
+		<property name="initialSize" value="3" />
+		<property name="maxActive" value="30" />
+		<property name="maxIdle" value="5" />
+		<property name="minIdle" value="1" />
+	</bean>
+	<!-- 配置SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- <property name="typeAliasesPackage" value="org.lanqiao.pojo"/> --><!-- 批量命名  liqin -->
+		 <!-- 为Admin FenYe 起别名 liqin -->
+		 <!-- ！！！！！如果你们的实体类要用到别名 在这里加 -->
+		<!-- <property name="typeAliases"> 
+    		<array>  
+        		<value>org.lanqiao.pojo.Admin</value>
+        		<value>org.lanqiao.util.FenYe1</value>
+    		</array>  
+		</property> -->
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.piaolaoshi.mapper"/>	 	
+	</bean>
+
+	<context:component-scan base-package="com.piaolaoshi.impl"/>	
+</beans>
